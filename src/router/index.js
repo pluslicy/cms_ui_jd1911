@@ -133,7 +133,7 @@ export const asyncRoutes = [
       }
     ]
   },
-   // 系统设置路由
+   // 用户路由
   {
     path: '/user',
     component: Layout,

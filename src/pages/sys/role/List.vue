@@ -31,7 +31,7 @@
       <el-form :model="role">
         {{role}}
         <el-form-item label="角色名称" label-width="80px">
-          admin
+          {{role.name}}
         </el-form-item>
         <el-form-item label="权限" label-width="80px">
           <el-cascader-panel v-model="role.privileges" :options="options" :props="props" clearable></el-cascader-panel>
@@ -39,7 +39,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="authorization_visible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small">确 定</el-button>
+        <el-button type="primary" size="small" @click="authorizationHandler">确 定</el-button>
       </div>
     </el-dialog>
     <!-- /模态框 -->
@@ -68,6 +68,21 @@ export default {
     this.loadPrivileges();
   },
   methods:{
+    authorizationHandler(){
+      request.request({
+        url:'/role/authorization',
+        method:'post',
+        headers:{
+          'Content-Type':'application/x-www-form-urlencoded'
+        },
+        data:qs.stringify(this.role)
+      })
+      .then(response=>{
+        this.authorization_visible = false;
+        this.$message({message:response.message,type:'success'});
+        this.loadRoles();
+      })
+    },
     saveRoleHandler(){
       request.request({
         url:'/role/saveOrUpdate',
@@ -95,6 +110,7 @@ export default {
     loadRoles(){
       request.get("/role/cascadePrivilegeFindAll")
       .then(response => {
+        // 将权限转换为id的数组
         response.data.forEach(item=>{
           item.privileges = item.privileges.map(p => p.id)
         })
@@ -115,6 +131,7 @@ export default {
       })
     },
     toAuthorization(record){
+      console.log(record);
       this.role = record;
       this.authorization_visible = true;
     }
