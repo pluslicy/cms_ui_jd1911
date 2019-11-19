@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
@@ -14,7 +15,6 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
@@ -51,11 +51,10 @@ service.interceptors.response.use(
     // if the custom code is not 20000, it is judged as an error. 
     if ( res.status !== 200) {
       // 消息弹框
-      Message({
-        message: res.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
+      Message({ message: res.message, type: 'error', duration: 5 * 1000 })
+      if(res.status === 401){
+        logout();
+      }
       // 返回承诺失败对象
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
@@ -72,5 +71,10 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+// 退出
+async function logout() {
+  await store.dispatch('user/logout')
+  router.push(`/login`)
+}
 
 export default service
