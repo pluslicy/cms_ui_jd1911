@@ -71,6 +71,7 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
 // 退出
 async function logout() {
   await store.dispatch('user/logout')
