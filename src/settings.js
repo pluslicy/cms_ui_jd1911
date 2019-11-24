@@ -1,6 +1,5 @@
 module.exports = {
   title: '智慧校园 . 课调云平台',
-
   /**
    * @type {boolean} true | false
    * @description Whether show the settings right-panel
