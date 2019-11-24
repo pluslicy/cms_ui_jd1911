@@ -4,16 +4,16 @@
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="所属栏目">
         <el-select v-model="form.categoryId" placeholder="请选择活动区域">
-          <el-option label="IT" value="3"></el-option>
-          <el-option label="娱乐" value="4"></el-option>
+          <el-option label="IT" value="3" />
+          <el-option label="娱乐" value="4" />
         </el-select>
       </el-form-item>
       <el-form-item label="标题">
-        <el-input v-model="form.title"></el-input>
+        <el-input v-model="form.title" />
       </el-form-item>
-      
+
       <el-form-item label="正文">
-        <el-input type="textarea" v-model="form.content"></el-input>
+        <el-input v-model="form.content" type="textarea" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">发布</el-button>
@@ -25,37 +25,37 @@
 import request from '@/utils/request'
 import qs from 'querystring'
 export default {
-  data(){
+  data() {
     return {
-      form:{}
+      form: {}
     }
   },
-  created(){
-    this.form = this.$route.query;
+  created() {
+    this.form = this.$route.query
   },
-  methods:{
-    back(){
-      this.$router.go(-1);
+  methods: {
+    back() {
+      this.$router.go(-1)
     },
-    onSubmit(){
+    onSubmit() {
       // 交互
       request.request({
-        url:"/article/saveOrUpdate",
-        method:"post",
-        headers:{
-          "Content-Type":"application/x-www-form-urlencoded"
+        url: '/article/saveOrUpdate',
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data:qs.stringify(this.form)
+        data: qs.stringify(this.form)
       })
-      .then(response =>{
+        .then(response => {
         // 提示成功
-        this.$message({
-          message: response.message,
-          type: 'success'
-        });
-        // 返回列表页
-        this.back();
-      })
+          this.$message({
+            message: response.message,
+            type: 'success'
+          })
+          // 返回列表页
+          this.back()
+        })
     }
   }
 }

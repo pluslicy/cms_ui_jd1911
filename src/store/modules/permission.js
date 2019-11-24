@@ -1,4 +1,5 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import { constantRoutes } from '@/router'
+import getDyRoutes from '@/router/modules/dynamicMenu'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -47,14 +48,11 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
-    return new Promise(resolve => {
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      }
+  generateRoutes({ commit }, id) {
+    return new Promise(async resolve => {
+      // 通过用户ID查询该用户可以访问到的菜单，转换为路由
+      const rs = await getDyRoutes(id)
+      const accessedRoutes = rs || []
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

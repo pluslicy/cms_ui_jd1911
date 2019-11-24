@@ -5,8 +5,6 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-
-
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -77,100 +75,101 @@ export const constantRoutes = [
         meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
       }
     ]
-  },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
-      }
-    ]
   }
+  // {
+  //   path: '/profile',
+  //   component: Layout,
+  //   redirect: '/profile/index',
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/profile/index'),
+  //       name: 'Profile',
+  //       meta: { title: 'Profile', icon: 'user', noCache: true }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/icons/index'),
+  //       name: 'Icons',
+  //       meta: { title: 'Icons', icon: 'icon', noCache: true }
+  //     }
+  //   ]
+  // }
 ]
 
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
+/*
 export const asyncRoutes = [
- 
-  // 栏目路由
+
   {
-    path: '/category',
+    path: '/notification',
     component: Layout,
+    meta: { title: '消息通知', icon: 'email', affix: true },
     children: [
       {
-        path: 'list',
+        path: 'category/list',
         component: () => import('@/pages/category/List'),
         name: 'cateory_list',
-        meta: { title: '栏目管理', icon: 'documentation', affix: true }
-      }
-    ]
-  },
-  // 文章路由
-  {
-    path: '/article',
-    component: Layout,
-    children: [
+        meta: { title: '栏目管理', affix: true }
+      },
       {
-        path: 'list',
+        path: 'article/list',
         component: () => import('@/pages/article/List'),
         name: 'article_list',
-        meta: { title: '文章列表', icon: 'documentation', affix: true }
+        meta: { title: '文章列表', affix: true }
       },
       {
         hidden:true,
-        path: 'editor',
+        path: 'article/editor',
         component: () => import('@/pages/article/Editor'),
         name: 'article_editor',
-        meta: { title: '文章编辑', icon: 'documentation', affix: true }
+        meta: { title: '文章编辑',  affix: true }
       }
     ]
   },
    // 用户路由
   {
-    path: '/user',
+    path: '/urp',
     component: Layout,
+    meta: { title: '角色权限', icon: 'user', affix: true },
     children: [
       {
         path: 'user/list',
         component: () => import('@/pages/sys/user/List'),
         name: 'sys_user_list',
-        meta: { title: '用户管理', icon: 'documentation', affix: true }
-      }
-    ]
-  },{
-    path: '/role',
-    component: Layout,
-    children: [
+        meta: { title: '用户管理', affix: true }
+      },
       {
-        path: 'list',
+        path: 'role/list',
         component: () => import('@/pages/sys/role/List'),
         name: 'role_list',
-        meta: { title: '角色管理', icon: 'documentation', affix: true }
-      }
-    ]
-  },{
-    path: '/usprivilegeer',
-    component: Layout,
-    children: [
+        meta: { title: '角色管理', affix: true }
+      },
       {
-        path: 'list',
+        path: 'privilege/list',
         component: () => import('@/pages/sys/privilege/List'),
         name: 'privilge_list',
-        meta: { title: '权限管理', icon: 'documentation', affix: true }
+        meta: { title: '权限管理',  affix: true }
       }
     ]
   },
+
+  // ...dynamicRoutes,
+  // ...store.state.dynamicRoutes,
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
+*/
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support

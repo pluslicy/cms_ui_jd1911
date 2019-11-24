@@ -48,12 +48,12 @@ service.interceptors.response.use(
     // res就是后端返回来的结果， { status,message,data,timestamp}
     const res = response.data
 
-    // if the custom code is not 20000, it is judged as an error. 
-    if ( res.status !== 200) {
+    // if the custom code is not 20000, it is judged as an error.
+    if (res.status !== 200) {
       // 消息弹框
       Message({ message: res.message, type: 'error', duration: 5 * 1000 })
-      if(res.status === 401){
-        logout();
+      if (res.status === 401) {
+        logout()
       }
       // 返回承诺失败对象
       return Promise.reject(new Error(res.message || 'Error'))

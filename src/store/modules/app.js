@@ -5,11 +5,15 @@ const state = {
     opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
     withoutAnimation: false
   },
+  dynamicRoutes: [],
   device: 'desktop',
   size: Cookies.get('size') || 'medium'
 }
 
 const mutations = {
+  RESET_DYNAMIC_ROUTES: (state, routes) => {
+    state.dynamicRoutes = routes
+  },
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
