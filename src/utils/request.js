@@ -71,8 +71,8 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-export function get (url, params) {
-  return service.get(url,{
+export function get(url, params) {
+  return service.get(url, {
     params, // get 请求时带的参数
     timeout: 10000,
     headers: {
@@ -80,8 +80,8 @@ export function get (url, params) {
     }
   })
 }
-export function del (url, params) {
-  return service.delete(url,{
+export function del(url, params) {
+  return service.delete(url, {
     params, // get 请求时带的参数
     timeout: 10000,
     headers: {
@@ -91,9 +91,9 @@ export function del (url, params) {
 }
 
 // 自定义post
-export function post(url,data){
-  return service.post(url, qs.stringify(data),{
-    timeout:10000,
+export function post(url, data) {
+  return service.post(url, qs.stringify(data), {
+    timeout: 10000,
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

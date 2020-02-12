@@ -7,9 +7,9 @@
     <el-table :data="users" size="small">
       <el-table-column prop="username" label="用户名" />
       <el-table-column prop="realname" label="姓名" />
-      <el-table-column label="角色" >
+      <el-table-column label="角色">
         <template slot-scope="scope">
-          {{scope.row.role_name}}
+          {{ scope.row.role_name }}
         </template>
       </el-table-column>
       <el-table-column prop="gender" label="性别">
@@ -31,7 +31,7 @@
     </el-table>
     <!-- 模态框 -->
     <el-dialog :title="title" :visible.sync="visible">
-      <el-form :model="form" ref="user_form" :rules="rules">
+      <el-form ref="user_form" :model="form" :rules="rules">
         <el-form-item label="用户名" label-width="80px" prop="username">
           <el-input v-model="form.username" autocomplete="off" />
         </el-form-item>
@@ -79,7 +79,7 @@
   </div>
 </template>
 <script>
-import {get,post,del} from '@/utils/request'
+import { get, post, del } from '@/utils/request'
 
 import qs from 'querystring'
 export default {
@@ -93,7 +93,7 @@ export default {
       users: [],
       roles: [],
       props: { multiple: true, value: 'id', label: 'name', emitPath: false },
-      rules:{
+      rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'change' }
         ],
@@ -116,24 +116,24 @@ export default {
   methods: {
     loadRoles() {
       get('/role/findAll')
-      .then(response => {
-        this.roles = response.data
-      })
+        .then(response => {
+          this.roles = response.data
+        })
     },
     saveUserHandler() {
       this.$refs['user_form'].validate((valid) => {
         if (valid) {
-          let url = '/baseUser/saveOrUpdate';
-          post(url,this.form)
-          .then(response => {
-            this.visible = false
-            this.$message({ message: response.message, type: 'success' })
-            this.loadUsers()
-          })
+          const url = '/baseUser/saveOrUpdate'
+          post(url, this.form)
+            .then(response => {
+              this.visible = false
+              this.$message({ message: response.message, type: 'success' })
+              this.loadUsers()
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     toAdd() {
       this.form = {}
@@ -141,14 +141,13 @@ export default {
     },
     loadUsers() {
       get('/baseUser/cascadeRoleFindAll')
-      .then(response => {
-        response.data.forEach(item => {
-          item.role_name = item.roles.map(r => r.name).join(',');
-          item.roles = item.roles.map(r => r.id)
-          
+        .then(response => {
+          response.data.forEach(item => {
+            item.role_name = item.roles.map(r => r.name).join(',')
+            item.roles = item.roles.map(r => r.id)
+          })
+          this.users = response.data
         })
-        this.users = response.data
-      })
     },
     deleteHandler(id) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -156,10 +155,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let url = '/baseUser/deleteById'
-        get(url,{id}).then(response =>{
-          this.$message({ type: 'success', message: response.message });
-          this.loadUsers();
+        const url = '/baseUser/deleteById'
+        get(url, { id }).then(response => {
+          this.$message({ type: 'success', message: response.message })
+          this.loadUsers()
         })
       })
     },
@@ -175,9 +174,9 @@ export default {
     },
     toDetails(row) {
       this.$router.push({
-        //path:'/sys/user/Details',
-        name:'_sys_user_Details',
-        query:row
+        // path:'/sys/user/Details',
+        name: '_sys_user_Details',
+        query: row
       })
     },
     setRolesHandler() {

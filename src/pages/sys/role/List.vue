@@ -16,8 +16,8 @@
     </el-table>
     <!-- 模态框 -->
     <el-dialog :title="title" :visible.sync="visible">
-      <el-form :model="form" :rules="rules" ref="role_form">
-        <el-form-item label="角色名称" label-width="80px"  prop="name">
+      <el-form ref="role_form" :model="form" :rules="rules">
+        <el-form-item label="角色名称" label-width="80px" prop="name">
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
       </el-form>
@@ -60,7 +60,7 @@ export default {
       roles: [], // 角色列表
       props: { multiple: true, value: 'id', label: 'name', emitPath: false, checkStrictly: true },
       options: [],
-      rules:{
+      rules: {
         name: [
           { required: true, message: '请输入角色名称', trigger: 'change' }
         ]
@@ -74,10 +74,10 @@ export default {
     this.loadPrivileges()
   },
   methods: {
-    // 去修改 
-    toUpdate(row){
-      this.form = row;
-      this.visible = true;
+    // 去修改
+    toUpdate(row) {
+      this.form = row
+      this.visible = true
     },
     authorizationHandler() {
       request.request({
@@ -105,16 +105,15 @@ export default {
             },
             data: qs.stringify(this.form)
           })
-          .then(response => {
-            this.visible = false
-            this.$message({ message: response.message, type: 'success' })
-            this.loadRoles()
-          })
+            .then(response => {
+              this.visible = false
+              this.$message({ message: response.message, type: 'success' })
+              this.loadRoles()
+            })
         } else {
-          return false;
+          return false
         }
-      });
-      
+      })
     },
     loadPrivileges() {
       request.get('/privilege/findPrivilegeTree')
@@ -134,7 +133,7 @@ export default {
       }
     },
     toAdd() {
-      this.form = {};
+      this.form = {}
       this.visible = true
     },
     loadRoles() {

@@ -8,7 +8,8 @@
       :data="privileges"
       size="small"
       row-key="id"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}" >
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
       <el-table-column prop="name" label="名称" />
       <el-table-column prop="route" label="路径" />
       <el-table-column prop="type" label="类型" />
@@ -20,9 +21,9 @@
       </el-table-column>
     </el-table>
     <!-- 模态框 -->
-    <el-dialog :title="title" :visible.sync="visible" >
+    <el-dialog :title="title" :visible.sync="visible">
       <!-- {{form}} -->
-      <el-form :model="form" :rules="rules" ref="privilege_form">
+      <el-form ref="privilege_form" :model="form" :rules="rules">
         <el-form-item label="名称" label-width="80px" prop="name">
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
@@ -39,8 +40,9 @@
             title="提示"
             width="300"
             trigger="hover"
-            content="菜单控制着用户登录后可以动态显示的菜单树；方法为具体的权限，控制着是否可以调用某些接口">
-            <el-button type="text" slot="reference"><i class="el-icon-location-information"></i></el-button>
+            content="菜单控制着用户登录后可以动态显示的菜单树；方法为具体的权限，控制着是否可以调用某些接口"
+          >
+            <el-button slot="reference" type="text"><i class="el-icon-location-information" /></el-button>
           </el-popover>
         </el-form-item>
         <el-form-item label="父权限" label-width="80px">
@@ -49,7 +51,7 @@
             clearable
             :options="privileges"
             :props="{ expandTrigger: 'hover', value: 'id', label: 'name' ,checkStrictly:true}"
-            ></el-cascader>
+          />
         </el-form-item>
         <el-form-item label="描述" label-width="80px">
           <el-input v-model="form.description" type="textarea" autocomplete="off" />
@@ -64,7 +66,7 @@
   </div>
 </template>
 <script>
-import {get,del,post} from '@/utils/request'
+import { get, del, post } from '@/utils/request'
 import qs from 'querystring'
 export default {
   data() {
@@ -73,7 +75,7 @@ export default {
       visible: false,
       title: '添加权限',
       privileges: [],
-      rules:{
+      rules: {
         name: [
           { required: true, message: '请输入权限名称', trigger: 'change' }
         ],
@@ -93,25 +95,25 @@ export default {
     submitHandler() {
       this.$refs['privilege_form'].validate((valid) => {
         if (valid) {
-          let url = "/privilege/saveOrUpdate";
-          post(url,this.form)
-          .then(response => {
-            this.visible = false
-            this.$message({ message: response.message, type: 'success' })
-            this.loadprivileges()
-          })
+          const url = '/privilege/saveOrUpdate'
+          post(url, this.form)
+            .then(response => {
+              this.visible = false
+              this.$message({ message: response.message, type: 'success' })
+              this.loadprivileges()
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     loadprivileges() {
-      let url = '/privilege/findPrivilegeTree';
+      const url = '/privilege/findPrivilegeTree'
       get(url)
-      .then(response => {
-        this.foo(response.data)
-        this.privileges = response.data
-      })
+        .then(response => {
+          this.foo(response.data)
+          this.privileges = response.data
+        })
     },
     foo(privileges) {
       for (const p of privileges) {
@@ -132,12 +134,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let url = "/privilege/deleteById?id="+id
+        const url = '/privilege/deleteById?id=' + id
         del(url).then(response => {
           this.$message({ type: 'success', message: response.message })
-          this.loadprivileges();
+          this.loadprivileges()
         })
-        
       })
     },
     toEdit(record) {

@@ -29,9 +29,9 @@ async function parseMenu(id) {
             },
             name: p.route.replace(/\//g, '_'),
             meta: { title: p.name, affix: true },
-            hidden: p.hidden ==1 ? true:false
+            hidden: p.hidden == 1
           }
-          //console.log(son_route);
+          // console.log(son_route);
           route.children.push(son_route)
         }
       }

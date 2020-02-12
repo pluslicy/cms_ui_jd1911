@@ -27,7 +27,7 @@
     <!-- /表格 -->
     <!-- 模态框 -->
     <el-dialog :title="title" :visible.sync="visible">
-      <el-form :model="form" ref="category_form" :rules="rules">
+      <el-form ref="category_form" :model="form" :rules="rules">
         <el-form-item label="栏目名称" label-width="80px" prop="name">
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
@@ -60,7 +60,7 @@ export default {
       title: '新增栏目',
       categories: [],
       ids: [],
-      rules:{
+      rules: {
         name: [
           { required: true, message: '请输入栏目名称', trigger: 'change' }
         ]
@@ -156,10 +156,9 @@ export default {
               this.reloadData()
             })
         } else {
-          return false;
+          return false
         }
-      });
-      
+      })
     }
   }
 }

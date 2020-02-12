@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-button type="text" @click="back">返回</el-button>
-    <el-form ref="article_form" :model="form" label-width="80px" :rules="rules" >
+    <el-form ref="article_form" :model="form" label-width="80px" :rules="rules">
       <el-form-item label="所属栏目" prop="categoryId">
         <el-select v-model="form.categoryId" placeholder="请选择活动区域">
           <el-option label="IT" value="3" />
@@ -28,8 +28,8 @@ export default {
   data() {
     return {
       form: {},
-       rules:{
-        categoryId:[
+      rules: {
+        categoryId: [
           { required: true, message: '请选择栏目', trigger: 'change' }
         ],
         title: [
@@ -60,20 +60,19 @@ export default {
             },
             data: qs.stringify(this.form)
           })
-          .then(response => {
-          // 提示成功
-            this.$message({
-              message: response.message,
-              type: 'success'
+            .then(response => {
+              // 提示成功
+              this.$message({
+                message: response.message,
+                type: 'success'
+              })
+              // 返回列表页
+              this.back()
             })
-            // 返回列表页
-            this.back()
-          })
         } else {
-          return false;
+          return false
         }
-      });
-      
+      })
     }
   }
 }
