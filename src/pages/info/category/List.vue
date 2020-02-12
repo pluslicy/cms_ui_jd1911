@@ -27,17 +27,17 @@
     <!-- /表格 -->
     <!-- 模态框 -->
     <el-dialog :title="title" :visible.sync="visible">
-      <el-form :model="form">
-        <el-form-item label="栏目名称" label-width="80px">
+      <el-form :model="form" ref="category_form" :rules="rules">
+        <el-form-item label="栏目名称" label-width="80px" prop="name">
           <el-input v-model="form.name" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="栏目介绍" label-width="80px">
-          <el-input v-model="form.description" type="textarea" autocomplete="off" />
         </el-form-item>
         <el-form-item label="父栏目" label-width="80px">
           <el-select v-model="form.parentId" clearable placeholder="请选择父栏目">
             <el-option v-for="c in categories" :key="c.id" :label="c.name" :value="c.id" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="栏目介绍" label-width="80px">
+          <el-input v-model="form.description" type="textarea" autocomplete="off" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -59,7 +59,12 @@ export default {
       form: {},
       title: '新增栏目',
       categories: [],
-      ids: []
+      ids: [],
+      rules:{
+        name: [
+          { required: true, message: '请输入栏目名称', trigger: 'change' }
+        ]
+      }
     }
   },
   // 生命周期
@@ -128,25 +133,33 @@ export default {
       })
     },
     submitForm() {
-      request.request({
-        url: '/category/saveOrUpdate',
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: qs.stringify(this.form)
-      })
-        .then(response => {
-        // 提示成功
-          this.$message({
-            message: response.message,
-            type: 'success'
+      this.$refs['category_form'].validate((valid) => {
+        if (valid) {
+          // 交互
+          request.request({
+            url: '/category/saveOrUpdate',
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: qs.stringify(this.form)
           })
-          // 关闭模态
-          this.visible = false
-          // 重载数据
-          this.reloadData()
-        })
+            .then(response => {
+            // 提示成功
+              this.$message({
+                message: response.message,
+                type: 'success'
+              })
+              // 关闭模态
+              this.visible = false
+              // 重载数据
+              this.reloadData()
+            })
+        } else {
+          return false;
+        }
+      });
+      
     }
   }
 }

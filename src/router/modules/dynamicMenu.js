@@ -10,7 +10,6 @@ async function parseMenu(id) {
     pid: 'parentId',
     children: 'children'
   })
-  console.log(privileges)
   const routes = []
   for (const privilege of privileges) {
     if (privilege.type === 'menu') {
@@ -29,8 +28,10 @@ async function parseMenu(id) {
               require(['@/pages' + p.route], resolve)
             },
             name: p.route.replace(/\//g, '_'),
-            meta: { title: p.name, affix: true }
+            meta: { title: p.name, affix: true },
+            hidden: p.hidden ==1 ? true:false
           }
+          //console.log(son_route);
           route.children.push(son_route)
         }
       }

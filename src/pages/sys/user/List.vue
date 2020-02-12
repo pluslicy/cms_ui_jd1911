@@ -4,46 +4,44 @@
     <div class="btns">
       <el-button type="primary" size="small" @click="toAdd">添加</el-button>
     </div>
-
     <el-table :data="users" size="small">
       <el-table-column prop="username" label="用户名" />
       <el-table-column prop="realname" label="姓名" />
-      <el-table-column prop="gender" label="性别" />
+      <el-table-column label="角色" >
+        <template slot-scope="scope">
+          {{scope.row.role_name}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="gender" label="性别">
+        <template slot-scope="scope">
+          <span v-if="scope.row.gender ==='male'">男</span>
+          <span v-else>女</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="telephone" label="手机号" />
       <el-table-column prop="status" label="状态" />
-      <el-table-column label="操作" align="center" width="100">
+      <el-table-column label="操作" align="center" width="160">
         <template slot-scope="scope">
           <a type="text" size="small" @click.prevent="toSetRole(scope.row)">设置</a>
-          <el-dropdown size="mini">
-            <span class="el-dropdown-link" style="font-size:12px">
-              更多<i class="el-icon-arrow-down el-icon--right" />
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>移除</el-dropdown-item>
-              <el-dropdown-item>详情</el-dropdown-item>
-              <el-dropdown-item>修改</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <!-- <el-button type="text" size="small" @click="deleteHandler(scope.row.id)">移除</el-button>
-          <el-button type="text" size="small" @click="toDetails(scope.row.id)">详情</el-button>
-          <el-button type="text" size="small" @click="toEdit(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="toSetRole(scope.row)">设置</el-button> -->
+          <a type="text" size="small" @click.prevent="deleteHandler(scope.row.id)">移除</a>
+          <a type="text" size="small" @click.prevent="toDetails(scope.row)">详情</a>
+          <a type="text" size="small" @click.prevent="toEdit(scope.row)">修改</a>
         </template>
       </el-table-column>
     </el-table>
     <!-- 模态框 -->
     <el-dialog :title="title" :visible.sync="visible">
-      <el-form :model="form">
-        <el-form-item label="用户名" label-width="80px">
+      <el-form :model="form" ref="user_form" :rules="rules">
+        <el-form-item label="用户名" label-width="80px" prop="username">
           <el-input v-model="form.username" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="姓名" label-width="80px">
+        <el-form-item label="姓名" label-width="80px" prop="realname">
           <el-input v-model="form.realname" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="密码" label-width="80px">
+        <el-form-item label="密码" label-width="80px" prop="password">
           <el-input v-model="form.password" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="性别" label-width="80px">
+        <el-form-item label="性别" label-width="80px" prop="gender">
           <el-radio-group v-model="form.gender">
             <el-radio label="male">男</el-radio>
             <el-radio label="female">女</el-radio>
@@ -81,7 +79,8 @@
   </div>
 </template>
 <script>
-import request from '@/utils/request'
+import {get,post,del} from '@/utils/request'
+
 import qs from 'querystring'
 export default {
   data() {
@@ -93,7 +92,21 @@ export default {
       user: {},
       users: [],
       roles: [],
-      props: { multiple: true, value: 'id', label: 'name', emitPath: false }
+      props: { multiple: true, value: 'id', label: 'name', emitPath: false },
+      rules:{
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'change' }
+        ],
+        realname: [
+          { required: true, message: '请输入姓名', trigger: 'change' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'change' }
+        ],
+        gender: [
+          { required: true, message: '请选择性别', trigger: 'change' }
+        ]
+      }
     }
   },
   created() {
@@ -102,38 +115,40 @@ export default {
   },
   methods: {
     loadRoles() {
-      request.get('/role/findAll')
-        .then(response => {
-          this.roles = response.data
-        })
+      get('/role/findAll')
+      .then(response => {
+        this.roles = response.data
+      })
     },
     saveUserHandler() {
-      request.request({
-        url: '/baseUser/saveOrUpdate',
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: qs.stringify(this.form)
-      })
-        .then(response => {
-          this.visible = false
-          this.$message({ message: response.message, type: 'success' })
-          this.loadUsers()
-        })
+      this.$refs['user_form'].validate((valid) => {
+        if (valid) {
+          let url = '/baseUser/saveOrUpdate';
+          post(url,this.form)
+          .then(response => {
+            this.visible = false
+            this.$message({ message: response.message, type: 'success' })
+            this.loadUsers()
+          })
+        } else {
+          return false;
+        }
+      });
     },
     toAdd() {
       this.form = {}
       this.visible = true
     },
     loadUsers() {
-      request.get('/baseUser/cascadeRoleFindAll')
-        .then(response => {
-          response.data.forEach(item => {
-            item.roles = item.roles.map(r => r.id)
-          })
-          this.users = response.data
+      get('/baseUser/cascadeRoleFindAll')
+      .then(response => {
+        response.data.forEach(item => {
+          item.role_name = item.roles.map(r => r.name).join(',');
+          item.roles = item.roles.map(r => r.id)
+          
         })
+        this.users = response.data
+      })
     },
     deleteHandler(id) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -141,9 +156,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: id
+        let url = '/baseUser/deleteById'
+        get(url,{id}).then(response =>{
+          this.$message({ type: 'success', message: response.message });
+          this.loadUsers();
         })
       })
     },
@@ -157,8 +173,12 @@ export default {
       this.user = record
       this.role_visible = true
     },
-    toDetails() {
-
+    toDetails(row) {
+      this.$router.push({
+        //path:'/sys/user/Details',
+        name:'_sys_user_Details',
+        query:row
+      })
     },
     setRolesHandler() {
       request.request({

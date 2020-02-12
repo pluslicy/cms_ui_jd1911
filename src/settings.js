@@ -1,5 +1,5 @@
 module.exports = {
-  title: '智慧校园 . 课调云平台',
+  title: '健身房会员选课签到系统',
   /**
    * @type {boolean} true | false
    * @description Whether show the settings right-panel

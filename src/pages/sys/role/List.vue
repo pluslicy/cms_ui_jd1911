@@ -10,13 +10,14 @@
         <template slot-scope="scope">
           <a @click.prevent="deleteHandler(scope.row.id)">移除</a>
           <a @click.prevent="toAuthorization(scope.row)">授权</a>
+          <a @click.prevent="toUpdate(scope.row)">修改</a>
         </template>
       </el-table-column>
     </el-table>
     <!-- 模态框 -->
     <el-dialog :title="title" :visible.sync="visible">
-      <el-form :model="form">
-        <el-form-item label="角色名称" label-width="80px">
+      <el-form :model="form" :rules="rules" ref="role_form">
+        <el-form-item label="角色名称" label-width="80px"  prop="name">
           <el-input v-model="form.name" autocomplete="off" />
         </el-form-item>
       </el-form>
@@ -34,7 +35,6 @@
           {{ role.name }}
         </el-form-item>
         <el-form-item label="权限" label-width="80px">
-          <!-- <el-cascader-panel v-model="role.privileges" :options="options" :props="props" clearable></el-cascader-panel> -->
           <el-cascader-panel v-model="role.privileges" :options="options" :props="props" clearable />
         </el-form-item>
       </el-form>
@@ -59,7 +59,12 @@ export default {
       role: {}, // 当前角色
       roles: [], // 角色列表
       props: { multiple: true, value: 'id', label: 'name', emitPath: false, checkStrictly: true },
-      options: []
+      options: [],
+      rules:{
+        name: [
+          { required: true, message: '请输入角色名称', trigger: 'change' }
+        ]
+      }
     }
   },
   created() {
@@ -69,16 +74,12 @@ export default {
     this.loadPrivileges()
   },
   methods: {
+    // 去修改 
+    toUpdate(row){
+      this.form = row;
+      this.visible = true;
+    },
     authorizationHandler() {
-      // let privileges =[];
-      // for(let item of this.role.privileges){
-      //   privileges.push(...item)
-      // }
-      // privileges = [...new Set(privileges)]
-      // let param = {
-      //   id:this.role.id,
-      //   privileges
-      // }
       request.request({
         url: '/role/authorization',
         method: 'post',
@@ -94,19 +95,26 @@ export default {
         })
     },
     saveRoleHandler() {
-      request.request({
-        url: '/role/saveOrUpdate',
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: qs.stringify(this.form)
-      })
-        .then(response => {
-          this.visible = false
-          this.$message({ message: response.message, type: 'success' })
-          this.loadRoles()
-        })
+      this.$refs['role_form'].validate((valid) => {
+        if (valid) {
+          request.request({
+            url: '/role/saveOrUpdate',
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: qs.stringify(this.form)
+          })
+          .then(response => {
+            this.visible = false
+            this.$message({ message: response.message, type: 'success' })
+            this.loadRoles()
+          })
+        } else {
+          return false;
+        }
+      });
+      
     },
     loadPrivileges() {
       request.get('/privilege/findPrivilegeTree')
@@ -126,6 +134,7 @@ export default {
       }
     },
     toAdd() {
+      this.form = {};
       this.visible = true
     },
     loadRoles() {
