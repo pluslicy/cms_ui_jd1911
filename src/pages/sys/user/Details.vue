@@ -1,30 +1,30 @@
 <template>
   <div class="user_details">
     <div style="float:right"> <el-button type="text" @click.prevent="$router.go(-1)">返回</el-button> </div>
-   <div>
-      <pan-thumb v-if="user.userFace" :image="user.userFace" > </pan-thumb>
-   </div>
+    <div>
+      <pan-thumb v-if="user.userFace" :image="user.userFace" />
+    </div>
     <table>
       <tbody>
         <tr>
           <td width="100"><strong>姓名:</strong></td>
-          <td>{{user.realname}}</td>
+          <td>{{ user.realname }}</td>
         </tr>
         <tr>
           <td width="100"><strong>手机号:</strong></td>
-          <td>{{user.telephone}}</td>
+          <td>{{ user.telephone }}</td>
         </tr>
         <tr>
           <td width="100"><strong>注册时间:</strong></td>
-          <td>{{moment(user.registerTime).format('YYYY-MM-DD')}}</td>
+          <td>{{ moment(user.registerTime).format('YYYY-MM-DD') }}</td>
         </tr>
         <tr>
           <td width="100"><strong>姓名:</strong></td>
-          <td>{{user.realname}}</td>
+          <td>{{ user.realname }}</td>
         </tr>
         <tr>
           <td width="100"><strong>状态:</strong></td>
-          <td>{{user.status}}</td>
+          <td>{{ user.status }}</td>
         </tr>
       </tbody>
     </table>
@@ -34,17 +34,17 @@
 import PanThumb from '@/components/PanThumb'
 import moment from 'moment'
 export default {
-  data(){
+  components: { PanThumb },
+  data() {
     return {
-      user:{}
+      user: {}
     }
   },
-  components: { PanThumb },
-  methods:{
-    moment
+  mounted() {
+    this.user = this.$route.query
   },
-  mounted(){
-    this.user = this.$route.query;
+  methods: {
+    moment
   }
 }
 </script>

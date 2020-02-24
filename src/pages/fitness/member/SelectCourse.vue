@@ -8,30 +8,31 @@
           <van-button size="mini" @click="toSelectCourseHandler">选课</van-button>
         </el-col>
         <el-col :span="12" style="text-align:right">
-          <el-link type="primary" >{{view.title}}</el-link>
-          <el-switch v-model="view.type" @change="switchChangeHandler"> </el-switch>
+          <el-link type="primary">{{ view.title }}</el-link>
+          <el-switch v-model="view.type" @change="switchChangeHandler" />
         </el-col>
       </el-row>
-      
+
     </div>
     <!-- /按钮 -->
     <!-- 表格 -->
     <div v-if="view.type">
       <van-card
-        v-for="c in courses" :key="c.id"
+        v-for="c in courses"
+        :key="c.id"
         :desc="c.description"
         :title="c.name"
       >
         <div slot="tags">
-          <van-tag plain type="danger">{{c.courseDay}}</van-tag>
-          <van-tag plain type="danger">{{c.courseTime}}</van-tag>
+          <van-tag plain type="danger">{{ c.courseDay }}</van-tag>
+          <van-tag plain type="danger">{{ c.courseTime }}</van-tag>
         </div>
         <div slot="footer">
           <van-button size="mini" type="danger" @click.prevent="deleteHandler(c)">删除</van-button>
         </div>
       </van-card>
     </div>
-    
+
     <!-- <el-table size="small" :data="courses" v-if="view.type">
       <el-table-column type="index" :index="1" label="序号"></el-table-column>
       <el-table-column label="课程名称" prop="name"></el-table-column>
@@ -46,14 +47,14 @@
     </el-table> -->
     <!-- /表格 -->
     <!-- 课表 -->
-    <BaseCourseTbl :data="courses" v-else></BaseCourseTbl>
+    <BaseCourseTbl v-else :data="courses" />
     <!-- /课表 -->
     <!-- 模态框 -->
-    <el-dialog :title="title" :visible.sync="visible" width="80%" >
-      <CourseTbl @clickNode="clickNodeHandler"></CourseTbl>
-      
+    <el-dialog :title="title" :visible.sync="visible" width="80%">
+      <CourseTbl @clickNode="clickNodeHandler" />
+
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="visible = false" size="small">完成</el-button>
+        <el-button type="primary" size="small" @click="visible = false">完成</el-button>
       </div>
     </el-dialog>
     <!-- /模态框 -->
@@ -61,80 +62,80 @@
 </template>
 
 <script>
-import {get,post} from '@/utils/request'
+import { get, post } from '@/utils/request'
 import CourseTbl from '@/components/Fitness/CourseTbl'
 import BaseCourseTbl from '@/components/Fitness/BaseCourseTbl'
 import { mapState } from 'vuex'
 export default {
-  data(){
+  components: {
+    CourseTbl, BaseCourseTbl
+  },
+  data() {
     return {
-      title:'课表选课',
-      visible:false,
-      courses:[],
-      view:{
-        type:true,
-        title:'表格视图'
+      title: '课表选课',
+      visible: false,
+      courses: [],
+      view: {
+        type: true,
+        title: '表格视图'
       }
     }
   },
-  created(){
-    this.loadUserCourses();
+  created() {
+    this.loadUserCourses()
   },
-  components:{
-    CourseTbl,BaseCourseTbl
+  computed: {
+    ...mapState('user', ['userId', 'roles'])
   },
-  computed:{
-     ...mapState('user',['userId','roles'])
-  },
-  methods:{
-    loadUserCourses(){
-      let url = "/course/selectUserCourses"
-      get(url,{userId:this.userId}).then(response =>{
-        this.courses = response.data;
+  methods: {
+    loadUserCourses() {
+      const url = '/course/selectUserCourses'
+      get(url, { userId: this.userId }).then(response => {
+        this.courses = response.data
       })
     },
-    deleteHandler(row){
+    deleteHandler(row) {
       this.$confirm('该操作将永久删除这条数据，你确认删除？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let url = '/course/deleteUserCourse';
-        get(url,{userId:this.userId,courseId:row.id}).then(response =>{
-          this.$message({type:"success",message:response.message});
-          this.loadUserCourses();
+        const url = '/course/deleteUserCourse'
+        get(url, { userId: this.userId, courseId: row.id }).then(response => {
+          this.$message({ type: 'success', message: response.message })
+          this.loadUserCourses()
         })
       })
     },
     // 点击课表中的课程
-    async clickNodeHandler(course){
-      let url = "/course/selectUserCourses"
-      let response = await get(url,{userId:this.userId,courseId:course.id});
+    async clickNodeHandler(course) {
+      const url = '/course/selectUserCourses'
+      const response = await get(url, { userId: this.userId, courseId: course.id })
 
-      if(response.data.length>0){
-        this.$message({type:"warning",message:"这门课程你已经选择了"})
+      if (response.data.length > 0) {
+        this.$message({ type: 'warning', message: '这门课程你已经选择了' })
       } else {
-        this.$alert('课程名称:'+course.name+' 上课时间:'+course.courseDay+","+course.courseTime, '课程信息', {
+        this.$alert('课程名称:' + course.name + ' 上课时间:' + course.courseDay + ',' + course.courseTime, '课程信息', {
           confirmButtonText: '确定选课',
           callback: action => {
             // 选课
-            let url_select = "/course/selectCourse";
-            post(url_select,{userId:this.userId,courseId:course.id}).then(response => {
-              this.$message({type:"success",message:response.message})
-              this.loadUserCourses();
+            const url_select = '/course/selectCourse'
+            post(url_select, { userId: this.userId, courseId: course.id }).then(response => {
+              this.$message({ type: 'success', message: response.message })
+              this.loadUserCourses()
             })
           }
-        });
+        })
       }
     },
-    toSelectCourseHandler(){
-      this.visible = true;
+    toSelectCourseHandler() {
+      this.visible = true
     },
-    switchChangeHandler(now){
-      if(now){
-        this.view.title = "表格视图";
+    switchChangeHandler(now) {
+      if (now) {
+        this.view.title = '表格视图'
       } else {
-        this.view.title = "课表视图";
+        this.view.title = '课表视图'
       }
     }
   }

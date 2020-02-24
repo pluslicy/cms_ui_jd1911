@@ -180,10 +180,10 @@ export default {
       })
     },
     setRolesHandler() {
-      post('/baseUser/setRoles',{
-          id: this.user.id,
-          roles: this.user.roles
-        })
+      post('/baseUser/setRoles', {
+        id: this.user.id,
+        roles: this.user.roles
+      })
         .then(response => {
           this.role_visible = false
           this.$message({ message: response.message, type: 'success' })

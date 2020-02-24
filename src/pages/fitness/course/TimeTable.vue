@@ -1,13 +1,13 @@
 <template>
   <div class="time_table">
-    <CourseTbl></CourseTbl>
+    <CourseTbl />
   </div>
 </template>
 <script>
 import CourseTbl from '@/components/Fitness/CourseTbl'
 export default {
-  components:{
+  components: {
     CourseTbl
-  }  
+  }
 }
 </script>

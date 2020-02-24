@@ -6,31 +6,33 @@
     <el-calendar v-model="value">
       <template
         slot="dateCell"
-        slot-scope="{date}">
-        <p>{{moment(date).format("DD")}}</p>
+        slot-scope="{date}"
+      >
+        <p>{{ moment(date).format("DD") }}</p>
         <div v-for="sign in signs" :key="sign.id" style="font-size:10px">
           <el-popover
             v-if="moment(date).format('YYYY-MM-DD') == moment(sign.signTime).format('YYYY-MM-DD')"
             placement="top-start"
             :title="sign.courseName"
             width="300"
-            trigger="hover">
+            trigger="hover"
+          >
             <div>
               <el-row>
                 <el-col :span="6">状态：</el-col>
-                <el-col :span="18">{{sign.status}}</el-col>
+                <el-col :span="18">{{ sign.status }}</el-col>
               </el-row>
-               <el-row>
+              <el-row>
                 <el-col :span="6">时间：</el-col>
-                <el-col :span="18">{{moment(sign.signTime).format('YYYY-MM-DD HH:mm')}}</el-col>
+                <el-col :span="18">{{ moment(sign.signTime).format('YYYY-MM-DD HH:mm') }}</el-col>
               </el-row>
-               <el-row>
+              <el-row>
                 <el-col :span="6">地点：</el-col>
-                <el-col :span="18">{{sign.address}}</el-col>
+                <el-col :span="18">{{ sign.address }}</el-col>
               </el-row>
               <!-- {{sign.status+' '+moment(sign.signTime).format('YYYY-MM-DD hh:mm')+' '+sign.address}} -->
             </div>
-            <span slot="reference">{{sign.courseName}}</span>
+            <span slot="reference">{{ sign.courseName }}</span>
           </el-popover>
         </div>
       </template>
@@ -51,36 +53,35 @@
 </template>
 
 <script>
-import {get,post} from '@/utils/request'
+import { get, post } from '@/utils/request'
 import { mapState } from 'vuex'
 import moment from 'moment'
 
 export default {
-  data(){
+  data() {
     return {
-      signs:[],
-      form:{
+      signs: [],
+      form: {
 
       },
-      value:new Date()
+      value: new Date()
     }
   },
-  created(){
-    this.loadUserCourses();
-    
+  created() {
+    this.loadUserCourses()
   },
-  mounted(){
-   
+  mounted() {
+
   },
-  computed:{
-     ...mapState('user',['userId','roles','name'])
+  computed: {
+    ...mapState('user', ['userId', 'roles', 'name'])
   },
-  methods:{
+  methods: {
     moment,
-    loadUserCourses(){
-      let url = "/sign/query"
-      get(url,{userId:this.userId}).then(response =>{
-        this.signs = response.data;
+    loadUserCourses() {
+      const url = '/sign/query'
+      get(url, { userId: this.userId }).then(response => {
+        this.signs = response.data
       })
     }
   }

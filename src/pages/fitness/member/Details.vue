@@ -8,7 +8,7 @@
       <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
     </div>
     <div>
-        <span class="display_name">{{ name }}</span>
+      <span class="display_name">{{ name }}</span>
     </div>
   </div>
 </template>

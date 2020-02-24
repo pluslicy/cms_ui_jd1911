@@ -18,10 +18,10 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
-import Vant from 'vant';
-import 'vant/lib/index.css';
+import Vant from 'vant'
+import 'vant/lib/index.css'
 
-Vue.use(Vant);
+Vue.use(Vant)
 
 /**
  * If you don't want to use mock-server

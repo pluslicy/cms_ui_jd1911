@@ -1,69 +1,69 @@
 <template>
   <div class="course_tbl">
-    <div class='class-table'>
-        <div class='table-wrapper'>
-          <div class='tabel-container'>
-            <table>
-              <thead>
-                <tr>
-                  <th v-for="d in days" :key="d">{{d}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="t in times" :key="t">
-                  <td v-for="d in days" :key="d">
-                    <!-- 左侧日期 -->
-                    <span v-if="d=='时间/日期'">
-                      {{t}}
-                    </span>
-                    <div class="course_item" v-for="c in courses.list" :key="c.id"  @click="clickNode(c)">
-                      <el-row  v-if="c.courseDay === d && c.courseTime === t">
-                        <el-col :span="12">
-                          <strong>{{c.name}}</strong>
-                        </el-col>
-                        <el-col :span="12">
-                          <em>{{c.teacher?c.teacher.realname:""}}</em>
-                        </el-col>
-                      </el-row>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <div class="class-table">
+      <div class="table-wrapper">
+        <div class="tabel-container">
+          <table>
+            <thead>
+              <tr>
+                <th v-for="d in days" :key="d">{{ d }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="t in times" :key="t">
+                <td v-for="d in days" :key="d">
+                  <!-- 左侧日期 -->
+                  <span v-if="d=='时间/日期'">
+                    {{ t }}
+                  </span>
+                  <div v-for="c in courses.list" :key="c.id" class="course_item" @click="clickNode(c)">
+                    <el-row v-if="c.courseDay === d && c.courseTime === t">
+                      <el-col :span="12">
+                        <strong>{{ c.name }}</strong>
+                      </el-col>
+                      <el-col :span="12">
+                        <em>{{ c.teacher?c.teacher.realname:"" }}</em>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import {get, post} from '@/utils/request'
+import { get, post } from '@/utils/request'
 export default {
-  data(){
+  data() {
     return {
-      days:["时间/日期","周一","周二","周三","周四","周五","周六","周日"],
-      times:["08:00-09:00","10:00-11:00","14:00-15:00","16:00-17:00","19:00-20:00"],
-      courses:{
-       list:[]
+      days: ['时间/日期', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+      times: ['08:00-09:00', '10:00-11:00', '14:00-15:00', '16:00-17:00', '19:00-20:00'],
+      courses: {
+        list: []
       },
-      param:{          
-        page:1,
-        pageSize:10000
-      },
+      param: {
+        page: 1,
+        pageSize: 10000
+      }
     }
   },
-  created(){
-     // 加载所有课程信息
-    this.loadCourses();
+  created() {
+    // 加载所有课程信息
+    this.loadCourses()
   },
-  methods:{
-    loadCourses(){
-      let url = '/course/pageQuery';
-      get(url,this.param).then(result =>{
-        this.courses = result.data;
+  methods: {
+    loadCourses() {
+      const url = '/course/pageQuery'
+      get(url, this.param).then(result => {
+        this.courses = result.data
       })
     },
-    clickNode(course){
-      this.$emit('clickNode',course)
+    clickNode(course) {
+      this.$emit('clickNode', course)
     }
   }
 }
