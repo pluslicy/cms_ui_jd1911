@@ -2,14 +2,14 @@
   <!-- 角色管理 -->
   <div class="role_list">
     <div class="btns">
-      <el-button type="primary" size="small" @click="toAdd">添加</el-button>
+      <!-- <el-button type="primary" size="small" @click="toAdd">添加</el-button> -->
     </div>
     <el-table :data="roles" size="small">
       <el-table-column prop="name" label="角色名称" />
       <el-table-column label="操作" align="center" width="180">
         <template slot-scope="scope">
           <a @click.prevent="deleteHandler(scope.row.id)">移除</a>
-          <a @click.prevent="toAuthorization(scope.row)">授权</a>
+          <!-- <a @click.prevent="toAuthorization(scope.row)">授权</a> -->
           <a @click.prevent="toUpdate(scope.row)">修改</a>
         </template>
       </el-table-column>

@@ -4,10 +4,12 @@ import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  userId:'',
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  roleIds:[]
 }
 
 const mutations = {
@@ -17,6 +19,9 @@ const mutations = {
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
   },
+  SET_USER_ID :(state, userId) =>{
+    state.userId = userId
+  },
   SET_NAME: (state, name) => {
     state.name = name
   },
@@ -25,6 +30,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_ROLE_IDS:(state,roleIds)=>{
+    state.roleIds = roleIds;
   }
 }
 
@@ -54,14 +62,16 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { realname: name, userFace: avatar, introduction } = data
+        const { realname: name, userFace: avatar, introduction,id } = data
         // [{id:1,name:"编辑"},{id:2,name:"管理员"}]
-        const roles = data.roles.map(item => item.name)
+        const roles = data.roles.map(item => item.name);
+        const roleIds = data.roles.map(item => item.id);
+        commit('SET_ROLE_IDS',roleIds);
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
-
+        commit('SET_USER_ID',id)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)

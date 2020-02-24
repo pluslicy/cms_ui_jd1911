@@ -31,7 +31,7 @@ async function parseMenu(id) {
             meta: { title: p.name, affix: true },
             hidden: p.hidden == 1
           }
-          // console.log(son_route);
+          console.log(JSON.stringify(son_route));
           route.children.push(son_route)
         }
       }

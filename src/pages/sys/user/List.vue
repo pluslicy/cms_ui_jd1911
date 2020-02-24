@@ -180,17 +180,10 @@ export default {
       })
     },
     setRolesHandler() {
-      request.request({
-        url: '/baseUser/setRoles',
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: qs.stringify({
+      post('/baseUser/setRoles',{
           id: this.user.id,
           roles: this.user.roles
         })
-      })
         .then(response => {
           this.role_visible = false
           this.$message({ message: response.message, type: 'success' })
